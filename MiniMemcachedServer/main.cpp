@@ -7,9 +7,14 @@
 //
 
 #include <iostream>
+#include "MiniMemcached.hpp"
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
-    return 0;
+    MiniMemcached m;
+    
+    if (m.initServer() == false) {
+        cout<<" init failed"<<endl;
+        return -1;
+    }
+    m.shutdown();
 }

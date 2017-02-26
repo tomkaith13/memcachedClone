@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		03774BBA1E6264020037350B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03774BB91E6264020037350B /* main.cpp */; };
+		03774BC21E62651F0037350B /* MiniMemcached.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03774BC01E62651F0037350B /* MiniMemcached.cpp */; };
+		03774BC51E62A8D30037350B /* ThreadPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03774BC31E62A8D30037350B /* ThreadPool.cpp */; };
+		03774BC91E62B9DC0037350B /* Connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03774BC71E62B9DC0037350B /* Connection.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +28,13 @@
 /* Begin PBXFileReference section */
 		03774BB61E6264020037350B /* MiniMemcachedServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MiniMemcachedServer; sourceTree = BUILT_PRODUCTS_DIR; };
 		03774BB91E6264020037350B /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		03774BC01E62651F0037350B /* MiniMemcached.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MiniMemcached.cpp; path = src/MiniMemcached.cpp; sourceTree = "<group>"; };
+		03774BC11E62651F0037350B /* MiniMemcached.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MiniMemcached.hpp; path = src/MiniMemcached.hpp; sourceTree = "<group>"; };
+		03774BC31E62A8D30037350B /* ThreadPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ThreadPool.cpp; path = src/ThreadPool.cpp; sourceTree = "<group>"; };
+		03774BC41E62A8D30037350B /* ThreadPool.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ThreadPool.hpp; path = src/ThreadPool.hpp; sourceTree = "<group>"; };
+		03774BC61E62A9520037350B /* Job.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Job.h; path = src/Job.h; sourceTree = "<group>"; };
+		03774BC71E62B9DC0037350B /* Connection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Connection.cpp; path = src/Connection.cpp; sourceTree = "<group>"; };
+		03774BC81E62B9DC0037350B /* Connection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Connection.hpp; path = src/Connection.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +68,13 @@
 			isa = PBXGroup;
 			children = (
 				03774BB91E6264020037350B /* main.cpp */,
+				03774BC11E62651F0037350B /* MiniMemcached.hpp */,
+				03774BC01E62651F0037350B /* MiniMemcached.cpp */,
+				03774BC31E62A8D30037350B /* ThreadPool.cpp */,
+				03774BC41E62A8D30037350B /* ThreadPool.hpp */,
+				03774BC71E62B9DC0037350B /* Connection.cpp */,
+				03774BC81E62B9DC0037350B /* Connection.hpp */,
+				03774BC61E62A9520037350B /* Job.h */,
 			);
 			path = MiniMemcachedServer;
 			sourceTree = "<group>";
@@ -119,7 +136,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03774BC21E62651F0037350B /* MiniMemcached.cpp in Sources */,
+				03774BC51E62A8D30037350B /* ThreadPool.cpp in Sources */,
 				03774BBA1E6264020037350B /* main.cpp in Sources */,
+				03774BC91E62B9DC0037350B /* Connection.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,6 +236,7 @@
 		03774BBE1E6264020037350B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -223,6 +244,7 @@
 		03774BBF1E6264020037350B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
