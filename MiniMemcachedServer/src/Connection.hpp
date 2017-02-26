@@ -7,13 +7,17 @@
 #define Connection_hpp
 
 #include "Job.h"
+#include "MiniMemcached.hpp"
+
+class MiniMemcached;
 
 class Connection : public Job {
     int mClientSoc;
+    MiniMemcached* mServObj;
 public:
-    Connection(int sockFd, void* startFP (void*)) :
-              mClientSoc(sockFd),
-              Job(startFP,&mClientSoc) {};
+    Connection() {};
+    Connection(int sockFd, MiniMemcached* obj) :
+              mClientSoc(sockFd), mServObj(obj) {};
     const int& getClientSocket();
     virtual void start();
 };

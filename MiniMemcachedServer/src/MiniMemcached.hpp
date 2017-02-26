@@ -72,8 +72,6 @@ class MiniMemcached {
     void connectionSetup();
     void* get_in_addr(struct sockaddr *);
     
-    // server connection instance - main worker thread
-    //void* serverInstance(void* arg);
     
     
 public:
@@ -93,6 +91,9 @@ public:
      * The server is read for use after this point.
      */
     bool initServer();
+    
+    // server connection instance - main worker thread
+    void serverInstance(int);
     
     /*
      * Resource deallocation via shutdown()

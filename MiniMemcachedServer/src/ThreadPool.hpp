@@ -28,7 +28,7 @@ class ThreadPool {
     int tCount;
     
     //doubly ended Queue for storing the jobs
-    deque<Job> jobQueue;
+    deque<Job*> jobQueue;
     
     //flag to indicate that we are done with the thread pool and signalling a wrap up
     bool stopAccepting;
@@ -44,7 +44,7 @@ class ThreadPool {
     
 public:
     ThreadPool(int tCount);
-    bool AddJob(Job);
+    bool AddJob(Job*);
     void* getResult(int jId);
     void threadFunc();
     void restartReceivingJobs();

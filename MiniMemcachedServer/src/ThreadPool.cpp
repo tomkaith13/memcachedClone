@@ -11,7 +11,7 @@
 //the wrapper function for calling a start of a job
 void ThreadPool::threadFunc() {
     while(1) {
-        Job currJob;
+        Job* currJob;
         { //scope of the conditional variable
             unique_lock<mutex> lck(mt);
             
@@ -26,7 +26,7 @@ void ThreadPool::threadFunc() {
             jobQueue.pop_front();
         }
         
-        currJob.start();
+        currJob->start();
     } //end while
 }
 
@@ -50,7 +50,7 @@ ThreadPool::~ThreadPool() {
 }
 
 bool
-ThreadPool::AddJob(Job j) {
+ThreadPool::AddJob(Job* j) {
     { //scope for locking the queue mutex before pushing in a job
         unique_lock<mutex> guard(mt);
         if (stopAccepting)

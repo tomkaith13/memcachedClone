@@ -145,13 +145,22 @@ void MiniMemcached::connectionSetup() {
         }
         
         //mActiveConnCondV.notify_one();
-        mConnectionTPool->AddJob(Connection(clientIOSocketFd, serverInstance));
+        mConnectionTPool->AddJob(new Connection(clientIOSocketFd, this));
     }
 }
 
 
-void* serverInstance(void* arg) {
-    return nullptr;
+void
+MiniMemcached::serverInstance(int ioSocket) {
+    
+    string s;
+  
+    s += "Client Connected\n\nReady to "
+         "accept commands: SET, GET and DELETE\n\n>";
+    
+    if (send(ioSocket, s.c_str(), s.size(), 0) == -1)
+        perror("send");
+    return;
 }
 
 void* MiniMemcached::get_in_addr(struct sockaddr *sa)

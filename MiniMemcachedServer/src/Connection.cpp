@@ -14,5 +14,5 @@ Connection::getClientSocket() {
 
 void
 Connection::start() {
-    Job::start();
+    mServObj->serverInstance(mClientSoc);
 }
