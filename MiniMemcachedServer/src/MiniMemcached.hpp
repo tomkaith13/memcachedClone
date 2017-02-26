@@ -27,6 +27,8 @@
 
 using namespace std;
 
+
+
 /*
  * This is the main class for mini-memcached which accepts resource 
  * configurables via arguments.
@@ -71,7 +73,8 @@ class MiniMemcached {
     void* get_in_addr(struct sockaddr *);
     
     // server connection instance - main worker thread
-    void* serverInstance(void* arg);
+    //void* serverInstance(void* arg);
+    
     
 public:
     
@@ -98,7 +101,6 @@ public:
     
     
 };
-
 
 
 #endif /* MiniMemcached_hpp */

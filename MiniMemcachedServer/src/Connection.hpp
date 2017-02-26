@@ -11,7 +11,7 @@
 class Connection : public Job {
     int mClientSoc;
 public:
-    Connection(int sockFd, void* startFP (void*), void* arg) :
+    Connection(int sockFd, void* startFP (void*)) :
               mClientSoc(sockFd),
               Job(startFP,&mClientSoc) {};
     const int& getClientSocket();

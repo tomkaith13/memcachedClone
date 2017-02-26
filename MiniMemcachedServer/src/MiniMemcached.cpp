@@ -8,6 +8,8 @@
 
 #include "MiniMemcached.hpp"
 
+extern void* serverInstance(void*);
+
 /*
  * Private api
  * This function creates and sets up socket for use.
@@ -143,14 +145,13 @@ void MiniMemcached::connectionSetup() {
         }
         
         //mActiveConnCondV.notify_one();
+        mConnectionTPool->AddJob(Connection(clientIOSocketFd, serverInstance));
     }
 }
 
-void*
-MiniMemcached::serverInstance(void* arg) {
-    while(1) {
-        
-    }
+
+void* serverInstance(void* arg) {
+    return nullptr;
 }
 
 void* MiniMemcached::get_in_addr(struct sockaddr *sa)
