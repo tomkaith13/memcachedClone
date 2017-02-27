@@ -144,7 +144,7 @@ void MiniMemcached::connectionSetup() {
             }
         }
         
-        //mActiveConnCondV.notify_one();
+        mActiveConnCondV.notify_one();
         mConnectionTPool->AddJob(new Connection(clientIOSocketFd, this));
     }
 }
@@ -153,14 +153,63 @@ void MiniMemcached::connectionSetup() {
 void
 MiniMemcached::serverInstance(int ioSocket) {
     
-    string s;
-  
-    s += "Client Connected\n\nReady to "
-         "accept commands: SET, GET and DELETE\n\n>";
+    string IntroStr;
+    string command;
     
-    if (send(ioSocket, s.c_str(), s.size(), 0) == -1)
-        perror("send");
+    cout<<"client socket:"<<ioSocket<<endl;
+    cout<<"client socket set size:"<<mActiveConnSet.size()<<endl;
+  
+    IntroStr += "Client Connected\n\nReady to "
+         "commands: SET, GET, DELETE and QUIT\n\n>";
+    
+    sendToClient(ioSocket, IntroStr);
+    char commandBuff[MAX_BYTES_LIMIT];
+    while(1) {
+        memset(commandBuff, 0, MAX_BYTES_LIMIT);
+        
+        receiveFromClient(ioSocket, commandBuff);
+        Command clientCmd(commandBuff);
+        
+        if (clientCmd.commandParse() == CMD_QUIT) {
+            cout<<"quit is typed:"<<endl;
+            string quitStr = "Connection Closed by Client\n";
+            sendToClient(ioSocket, quitStr);            
+            break;
+        } else {
+            //invalid command
+            cout<<"invalid command: "<<commandBuff<<endl;
+            sendToClient(ioSocket, "invalid command\n>");
+            continue;
+        }
+        
+        
+    } //end while
+    
+    {
+        unique_lock<mutex> guard(mActiveConnMutex);
+        mActiveConnCount--;
+        if (mActiveConnSet.find(ioSocket) != mActiveConnSet.end())
+            mActiveConnSet.erase(mActiveConnSet.find(ioSocket));
+        close(ioSocket);
+    }
+    mActiveConnCondV.notify_one();
     return;
+}
+
+void MiniMemcached::sendToClient(int sockfd, string message) {
+    if (send(sockfd, message.c_str(), message.size(), 0) == -1) {
+        perror("sending to client failed");
+        throw "server instance failed to send message to client";
+    }
+
+}
+
+void MiniMemcached::receiveFromClient(int sockfd, char* message) {
+    
+    if (recv(sockfd, message, MAX_BYTES_LIMIT, 0) == -1) {
+        perror("receive from client failed");
+        throw "server instance failed to receive message from client";
+    }
 }
 
 void* MiniMemcached::get_in_addr(struct sockaddr *sa)

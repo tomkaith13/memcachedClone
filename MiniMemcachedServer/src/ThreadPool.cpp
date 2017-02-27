@@ -22,11 +22,12 @@ void ThreadPool::threadFunc() {
             if (this->stopAccepting && this->jobQueue.empty())
                 return;
             
-            currJob = std::move(jobQueue.front());
+            currJob = jobQueue.front();
             jobQueue.pop_front();
         }
         
         currJob->start();
+        delete currJob;
     } //end while
 }
 

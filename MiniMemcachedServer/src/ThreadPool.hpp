@@ -16,10 +16,11 @@
 #include <mutex>
 #include <condition_variable>
 #include "Job.h"
+
+
 using namespace std;
+
 #define TP_MAX_THREADS 25
-
-
 
 
 // Thread pool class

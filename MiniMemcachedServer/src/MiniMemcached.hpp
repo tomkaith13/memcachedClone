@@ -24,9 +24,15 @@
 #include <arpa/inet.h>
 #include "ThreadPool.hpp"
 #include "Connection.hpp"
+#include "Command.hpp"
 
 using namespace std;
 
+// LIMITS MACRO
+#define MAX_BYTES_LIMIT 100
+#define MAX_CONNECTIONS_LIMIT 10
+#define MAX_CACHE_SIZE 100
+#define DEFAULT_PORT "11211"
 
 
 /*
@@ -48,6 +54,9 @@ class MiniMemcached {
     
     //server socket fd - for accepting new connections
     int mServSockFD;
+    
+    //max limit of bytes sent/received
+    int mMaxBytesLimit;
     
     /*
      * unordered_set of client connection
@@ -72,18 +81,22 @@ class MiniMemcached {
     void connectionSetup();
     void* get_in_addr(struct sockaddr *);
     
+    void sendToClient(int sockFD, string);
+    void receiveFromClient(int sockFD, char* );
+    
     
     
 public:
     
     // main constructor with default args
-    MiniMemcached(string portNum = "11211",
-                  int connectionCount = 10,
-                  int cacheSize = 100,
+    MiniMemcached(string portNum = DEFAULT_PORT,
+                  int connectionCount = MAX_CONNECTIONS_LIMIT,
+                  int cacheSize = MAX_CACHE_SIZE,
                   string configFile = "") : mPortNum(portNum),
                                             mConnectionCount(connectionCount),
                                             mCacheSize(cacheSize),
                                             mConfigFile(configFile),
+                                            mMaxBytesLimit(MAX_BYTES_LIMIT),
                                             mActiveConnCount(0) {};
     
     /*

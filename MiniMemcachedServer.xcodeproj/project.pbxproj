@@ -11,6 +11,7 @@
 		03774BC21E62651F0037350B /* MiniMemcached.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03774BC01E62651F0037350B /* MiniMemcached.cpp */; };
 		03774BC51E62A8D30037350B /* ThreadPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03774BC31E62A8D30037350B /* ThreadPool.cpp */; };
 		03774BC91E62B9DC0037350B /* Connection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03774BC71E62B9DC0037350B /* Connection.cpp */; };
+		03774BCC1E636E590037350B /* Command.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 03774BCA1E636E590037350B /* Command.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,6 +36,8 @@
 		03774BC61E62A9520037350B /* Job.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Job.h; path = src/Job.h; sourceTree = "<group>"; };
 		03774BC71E62B9DC0037350B /* Connection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Connection.cpp; path = src/Connection.cpp; sourceTree = "<group>"; };
 		03774BC81E62B9DC0037350B /* Connection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Connection.hpp; path = src/Connection.hpp; sourceTree = "<group>"; };
+		03774BCA1E636E590037350B /* Command.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Command.cpp; path = src/Command.cpp; sourceTree = "<group>"; };
+		03774BCB1E636E590037350B /* Command.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Command.hpp; path = src/Command.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +73,8 @@
 				03774BB91E6264020037350B /* main.cpp */,
 				03774BC11E62651F0037350B /* MiniMemcached.hpp */,
 				03774BC01E62651F0037350B /* MiniMemcached.cpp */,
+				03774BCA1E636E590037350B /* Command.cpp */,
+				03774BCB1E636E590037350B /* Command.hpp */,
 				03774BC31E62A8D30037350B /* ThreadPool.cpp */,
 				03774BC41E62A8D30037350B /* ThreadPool.hpp */,
 				03774BC71E62B9DC0037350B /* Connection.cpp */,
@@ -140,6 +145,7 @@
 				03774BC51E62A8D30037350B /* ThreadPool.cpp in Sources */,
 				03774BBA1E6264020037350B /* main.cpp in Sources */,
 				03774BC91E62B9DC0037350B /* Connection.cpp in Sources */,
+				03774BCC1E636E590037350B /* Command.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
