@@ -168,8 +168,13 @@ MiniMemcached::serverInstance(int ioSocket) {
         
         receiveFromClient(ioSocket, commandBuff);
         Command clientCmd(commandBuff);
-        
-        if (clientCmd.commandParse() == CMD_QUIT) {
+        if (clientCmd.commandParse() == CMD_SET) {
+            
+            continue;
+        } else if (clientCmd.commandParse() == CMD_GET) {
+            
+            continue;
+        } else if (clientCmd.commandParse() == CMD_QUIT) {
             cout<<"quit is typed:"<<endl;
             string quitStr = "Connection Closed by Client\n";
             sendToClient(ioSocket, quitStr);            
@@ -177,7 +182,7 @@ MiniMemcached::serverInstance(int ioSocket) {
         } else {
             //invalid command
             cout<<"invalid command: "<<commandBuff<<endl;
-            sendToClient(ioSocket, "invalid command\n>");
+            sendToClient(ioSocket, "ERROR\r\n>");
             continue;
         }
         

@@ -45,11 +45,15 @@ Command::commandParse() {
                    ::tolower);
     
     if (commandTitle == "get") {
-        
-        return CMD_GET;
+        if (validGetCommand(commandVec))
+            return CMD_GET;
+        else
+            return CMD_INVALID;
     } else if (commandTitle == "set") {
-        
-        return CMD_SET;
+        if (validSetCommand(commandVec, clientDataVec[1]))
+            return CMD_SET;
+        else
+            return CMD_INVALID;
     } else if (commandTitle == "delete") {
         
         return CMD_DELETE;
@@ -58,7 +62,33 @@ Command::commandParse() {
         return CMD_QUIT;
     } else
         return CMD_INVALID;
+}
+
+bool
+Command::validSetCommand(vector<string> commandVec, string val) {
     
+    if (commandVec.size() < 5 || commandVec.size() > 6)
+        return false;
+    mCommand = commandVec[0];
+    mKey = commandVec[1];
+    mFlags = stoi(commandVec[2]);
+    mExpTime = 0;
+    mBytes = stoi(commandVec[4]);
+    mNoReply = false;
     
+    if (commandVec.size() == 6)
+        mNoReply = true;
+    mVal = val.substr(0, mBytes);
     
+    return true;
+}
+
+bool
+Command::validGetCommand(vector<string> cmdVec) {
+    
+    if (cmdVec.size() < 2)
+        return false;
+    
+    mGetKeyVec = vector<string>(cmdVec.begin()+1, cmdVec.end());    
+    return true;
 }
