@@ -64,7 +64,6 @@ class MiniMemcached {
     mutex mActiveConnMutex;
     condition_variable mActiveConnCondV;
     int mActiveConnCount;
-    unordered_set<int> mActiveConnSet;
     
     struct sockaddr_storage mClientAddrInfo;
     

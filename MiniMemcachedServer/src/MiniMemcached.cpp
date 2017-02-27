@@ -137,7 +137,6 @@ void MiniMemcached::connectionSetup() {
             unique_lock<mutex> guard(mActiveConnMutex);
             if (mActiveConnCount < mConnectionCount) {
                 mActiveConnCount++;
-                mActiveConnSet.insert(clientIOSocketFd);
             } else {
                 cerr<<"Active connections exceeded "<<mConnectionCount<<endl;
                 close(clientIOSocketFd);
@@ -157,7 +156,7 @@ MiniMemcached::serverInstance(int ioSocket) {
     string command;
     
     cout<<"client socket:"<<ioSocket<<endl;
-    cout<<"client socket set size:"<<mActiveConnSet.size()<<endl;
+    cout<<"client socket set size:"<<mActiveConnCount<<endl;
   
     IntroStr += "Client Connected\n\nReady to "
          "commands: SET, GET, DELETE and QUIT\n\n>";
@@ -188,8 +187,6 @@ MiniMemcached::serverInstance(int ioSocket) {
     {
         unique_lock<mutex> guard(mActiveConnMutex);
         mActiveConnCount--;
-        if (mActiveConnSet.find(ioSocket) != mActiveConnSet.end())
-            mActiveConnSet.erase(mActiveConnSet.find(ioSocket));
         close(ioSocket);
     }
     mActiveConnCondV.notify_one();
