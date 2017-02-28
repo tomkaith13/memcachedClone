@@ -38,7 +38,7 @@ class Command {
     int mBytes;
     int mCasUnique;
     bool mNoReply;
-    string mVal;
+
     
     
     
@@ -49,12 +49,11 @@ public:
     CommandType commandParse();
     
     //set command related functions
-    bool validSetCommand(vector<string>, string val);
+    bool validSetCommand(vector<string>);
     inline const string& getKeyFromSetCmd() { return mKey; }
     inline const int& getFlagsFromSetCmd() { return mFlags; }
     inline const int& getBytesFromSetCmd() { return mBytes; }
     inline const bool& getNoReplyFromSetCmd() { return mNoReply; }
-    inline const string& getValFromSetCmd() { return mVal; }
     
     //get command related functions
     bool validGetCommand(vector<string>);

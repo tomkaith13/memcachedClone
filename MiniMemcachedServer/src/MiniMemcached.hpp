@@ -10,7 +10,6 @@
 #define MiniMemcached_hpp
 
 #include <iostream>
-#include <unordered_set>
 #include <string>
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,6 +21,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <arpa/inet.h>
+#include <unordered_map>
 #include "ThreadPool.hpp"
 #include "Connection.hpp"
 #include "Command.hpp"
@@ -34,9 +34,18 @@ using namespace std;
 #define MAX_CACHE_SIZE 100
 #define DEFAULT_PORT "11211"
 
+/*
+ * memCacheVal signature
+ */
+struct memCachedVal {
+    string mcCacheStrVal;
+    int mcBytes;
+    int mcFlags;
+    int mcExpTime;
+};
 
 /*
- * This is the main class for mini-memcached which accepts resource 
+ * This is the main class for mini-memcached which accepts resource
  * configurables via arguments.
  */
 class MiniMemcached {
@@ -64,6 +73,14 @@ class MiniMemcached {
     mutex mActiveConnMutex;
     condition_variable mActiveConnCondV;
     int mActiveConnCount;
+    
+    /*
+     * unordered_map for storing the data and mutex
+     */
+    mutex mMemcachedMapMut;
+    unordered_map<string, memCachedVal> mMemcachedHashMap;
+    
+    
     
     struct sockaddr_storage mClientAddrInfo;
     

@@ -168,11 +168,51 @@ MiniMemcached::serverInstance(int ioSocket) {
         
         receiveFromClient(ioSocket, commandBuff);
         Command clientCmd(commandBuff);
+        
         if (clientCmd.commandParse() == CMD_SET) {
+            cout<<"client issued set. Ready to accept data block"<<endl;
+            
+            memset(commandBuff, 0, MAX_BYTES_LIMIT);
+            receiveFromClient(ioSocket, commandBuff);
+            string val = string(commandBuff);
+            
+            struct memCachedVal mcCacheVal;
+            
+            mcCacheVal.mcBytes = clientCmd.getBytesFromSetCmd();
+            mcCacheVal.mcCacheStrVal = val.substr(0, mcCacheVal.mcBytes);
+            mcCacheVal.mcFlags = clientCmd.getFlagsFromSetCmd();
+            mcCacheVal.mcExpTime = 0;
+            
+            {
+                unique_lock<mutex> guard(mMemcachedMapMut);
+                mMemcachedHashMap[clientCmd.getKeyFromSetCmd()] = mcCacheVal;
+            }
+            sendToClient(ioSocket, "STORED\n>");
             
             continue;
         } else if (clientCmd.commandParse() == CMD_GET) {
+            vector<string> keyVec = clientCmd.getKeysFromGetCmd();
             
+            for (auto key : keyVec) {
+                
+                if (mMemcachedHashMap.find(key) != mMemcachedHashMap.end()) {
+                    string output;
+                    struct memCachedVal hashVal = mMemcachedHashMap[key];
+                    output.append("VALUE ");
+                    output.append(key);
+                    output.append(" ");
+                    output.append(to_string(hashVal.mcFlags));
+                    output.append(" ");
+                    output.append(to_string(hashVal.mcBytes));
+                    output.append("\n");
+                    output.append(hashVal.mcCacheStrVal);
+                    output.append("\n");
+                    
+                    sendToClient(ioSocket, output);
+                    output.clear();
+                }
+            }
+            sendToClient(ioSocket, "END\n>");
             continue;
         } else if (clientCmd.commandParse() == CMD_QUIT) {
             cout<<"quit is typed:"<<endl;

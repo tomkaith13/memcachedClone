@@ -27,16 +27,19 @@ Command::commandParse() {
     vector<string> clientDataVec;
     string commandTitle;
 
-    split(mCmdString, "\r", clientDataVec);
     
-    if (clientDataVec.empty())
+    
+    if (mCmdString.empty())
         return CMD_INVALID;
-    
+    split(mCmdString, "\r\n", clientDataVec);
     vector<string> commandVec;
     split(clientDataVec[0], " ", commandVec);
     
-    if (commandVec.empty())
+    if (!commandVec.empty())
+        commandTitle = commandVec[0];
+    else {
         commandTitle = clientDataVec[0];
+    }
     
     
     transform(commandTitle.begin(),
@@ -50,7 +53,7 @@ Command::commandParse() {
         else
             return CMD_INVALID;
     } else if (commandTitle == "set") {
-        if (validSetCommand(commandVec, clientDataVec[1]))
+        if (validSetCommand(commandVec))
             return CMD_SET;
         else
             return CMD_INVALID;
@@ -60,12 +63,12 @@ Command::commandParse() {
     } else if (commandTitle == "quit") {
         
         return CMD_QUIT;
-    } else
+    }else
         return CMD_INVALID;
 }
 
 bool
-Command::validSetCommand(vector<string> commandVec, string val) {
+Command::validSetCommand(vector<string> commandVec) {
     
     if (commandVec.size() < 5 || commandVec.size() > 6)
         return false;
@@ -78,17 +81,16 @@ Command::validSetCommand(vector<string> commandVec, string val) {
     
     if (commandVec.size() == 6)
         mNoReply = true;
-    mVal = val.substr(0, mBytes);
     
     return true;
 }
 
 bool
-Command::validGetCommand(vector<string> cmdVec) {
+Command::validGetCommand(vector<string> commandVec) {
     
-    if (cmdVec.size() < 2)
+    if (commandVec.size() < 2)
         return false;
     
-    mGetKeyVec = vector<string>(cmdVec.begin()+1, cmdVec.end());    
+    mGetKeyVec = vector<string>(commandVec.begin()+1, commandVec.end());
     return true;
 }
