@@ -42,6 +42,7 @@ struct memCachedVal {
     int mcBytes;
     int mcFlags;
     int mcExpTime;
+    size_t mcCasVal;
 };
 
 /*

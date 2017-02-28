@@ -159,6 +159,14 @@ MiniMemcached::serverInstance(int ioSocket) {
             mcCacheVal.mcFlags = clientCmd.getFlagsFromSetCmd();
             mcCacheVal.mcExpTime = 0;
             
+            /*
+             * calculate and store the new hash from the original value
+             * This is the hash that is returned by gets() and will be used
+             * by cas to decided is the new value is stored or not.
+             */
+            
+            mcCacheVal.mcCasVal = hash<string>{}(mcCacheVal.mcCacheStrVal);
+            
             { // scope for the mutex to modify the unordered_map
                 unique_lock<mutex> guard(mMemcachedMapMut);
                 mMemcachedHashMap[clientCmd.getKeyFromSetCmd()] = mcCacheVal;
