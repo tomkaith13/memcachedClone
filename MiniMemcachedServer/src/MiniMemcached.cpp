@@ -68,34 +68,6 @@ void MiniMemcached::connectionSetup() {
         throw "listen failed";
     }
 
-    /*
-    while(1) {
-        cout<<"looping for accepting sockets"<<endl;
-        socklen_t sin_size = sizeof mClientAddrInfo;
-        mServIoFd = accept(mServSockFD, (struct sockaddr *)&mClientAddrInfo, &sin_size);
-        if (mServIoFd == -1) {
-            perror("server: accept");
-            throw "accept failed";
-        }
-        
-        char clientIp[INET6_ADDRSTRLEN];
-        inet_ntop(mClientAddrInfo.ss_family,
-                  get_in_addr((struct sockaddr *)&mClientAddrInfo),
-                  clientIp, sizeof clientIp);
-        
-        //cout<<"Server received connection from client: "<<clientIp<<endl;
-        printf("server for connection from client: %s\n", clientIp);
-        
-        
-        // now we create threads to service the connections
-        
-        if (send(mServIoFd, "Hello, world!\n\n", 13, 0) == -1)
-            perror("send");
-        close(mServIoFd);
-    }
-     */
-    
-    
     // Creating a global thread pool to handle all connections
     try {
         mConnectionTPool = new ThreadPool(mConnectionCount);
@@ -148,7 +120,10 @@ void MiniMemcached::connectionSetup() {
     }
 }
 
-
+/*
+ * This is the function which runs in every worker thread
+ * Unlike the main thread, this function is responsible for any client IO.
+ */
 void
 MiniMemcached::serverInstance(int ioSocket) {
     
@@ -169,6 +144,7 @@ MiniMemcached::serverInstance(int ioSocket) {
         receiveFromClient(ioSocket, commandBuff);
         Command clientCmd(commandBuff);
         
+        //logic for set command
         if (clientCmd.commandParse() == CMD_SET) {
             cout<<"client issued set. Ready to accept data block"<<endl;
             
@@ -190,7 +166,8 @@ MiniMemcached::serverInstance(int ioSocket) {
             sendToClient(ioSocket, "STORED\n>");
             
             continue;
-        } else if (clientCmd.commandParse() == CMD_GET) {
+        } //logic for get command
+        else if (clientCmd.commandParse() == CMD_GET) {
             vector<string> keyVec = clientCmd.getKeysFromGetCmd();
             
             for (auto key : keyVec) {
@@ -214,12 +191,14 @@ MiniMemcached::serverInstance(int ioSocket) {
             }
             sendToClient(ioSocket, "END\n>");
             continue;
-        } else if (clientCmd.commandParse() == CMD_QUIT) {
+        } // if user types quit
+        else if (clientCmd.commandParse() == CMD_QUIT) {
             cout<<"quit is typed:"<<endl;
             string quitStr = "Connection Closed by Client\n";
             sendToClient(ioSocket, quitStr);            
             break;
-        } else {
+        } // any other invalid command is greeted with ERROR
+        else {
             //invalid command
             cout<<"invalid command: "<<commandBuff<<endl;
             sendToClient(ioSocket, "ERROR\r\n>");
