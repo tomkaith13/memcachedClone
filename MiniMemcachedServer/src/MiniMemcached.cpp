@@ -199,6 +199,27 @@ MiniMemcached::serverInstance(int ioSocket) {
             }
             sendToClient(ioSocket, "END\n>");
             continue;
+        } // If the user tries to delete a key
+        else if (clientCmd.commandParse() == CMD_DELETE) {
+            string deleteKey = clientCmd.getKeyFromDeleteCmd();
+            bool deletedFlg = false;
+            
+            { //mutex scope
+                unique_lock<mutex> guard(mMemcachedMapMut);
+                if (mMemcachedHashMap.find(deleteKey) !=
+                    mMemcachedHashMap.end()) {
+                    mMemcachedHashMap.erase(deleteKey);
+                    deletedFlg = true;
+                }
+            }
+            
+            if (deletedFlg)
+                sendToClient(ioSocket, "DELETED\r\n>");
+            else
+                sendToClient(ioSocket, "NOT_FOUND\r\n>");
+            
+            continue;
+            
         } // if user types quit
         else if (clientCmd.commandParse() == CMD_QUIT) {
             cout<<"quit is typed:"<<endl;

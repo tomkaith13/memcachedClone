@@ -60,6 +60,11 @@ public:
     vector<string> mGetKeyVec;
     inline const vector<string>& getKeysFromGetCmd() { return mGetKeyVec; }
     
+    //delete command related functions
+    bool validDeleteCommand(vector<string>);
+    inline const string& getKeyFromDeleteCmd() { return mKey; }
+    inline const bool& getNoReplyFromDeleteCmd() { return mNoReply; }
+    
     
 };
 
