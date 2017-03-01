@@ -38,7 +38,7 @@ class Command {
     int mFlags;
     int mExpTime;
     int mBytes;
-    int mCasUnique;
+    size_t mCasUnique;
     bool mNoReply;
 
     
@@ -71,6 +71,14 @@ public:
     bool validGetsCommand(vector<string>);
     vector<string> mGetsKeyVec;
     inline const vector<string>& getKeysFromGetsCmd() { return mGetsKeyVec; }
+    
+    //cas command related functions and members
+    bool validCasCommand(vector<string>);
+    inline const string& getKeyFromCasCmd() { return mKey; }
+    inline const int& getFlagsFromCasCmd() { return mFlags; }
+    inline const int& getBytesFromCasCmd() { return mBytes; }
+    inline const size_t& getCasUniqueFromCasCmd() { return mCasUnique; }
+    inline const bool& getNoReplyFromCasCmd() { return mNoReply; }
 
     
     

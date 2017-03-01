@@ -125,3 +125,21 @@ Command::validGetsCommand(vector<string> commandVec) {
     mGetsKeyVec = vector<string>(commandVec.begin()+1, commandVec.end());
     return true;
 }
+
+bool
+Command::validCasCommand(vector<string> commandVec) {
+    if (commandVec.size() < 6 || commandVec.size() > 7)
+        return false;
+    
+    mCommand = commandVec[0];
+    mKey = commandVec[1];
+    mFlags = stoi(commandVec[2]);
+    mExpTime = 0;
+    mBytes = stoi(commandVec[4]);
+    mCasUnique = stol(commandVec[5]);
+    mNoReply = false;
+    
+    if (commandVec.size() == 7)
+        mNoReply = true;
+    return true;
+}

@@ -220,7 +220,8 @@ MiniMemcached::serverInstance(int ioSocket) {
             
             continue;
             
-        } else if (clientCmd.commandParse() == CMD_GETS) {
+        } // If the user tries to get a key with cas_unique using gets()
+        else if (clientCmd.commandParse() == CMD_GETS) {
             
             vector<string> keyVec = clientCmd.getKeysFromGetsCmd();
             
@@ -246,6 +247,45 @@ MiniMemcached::serverInstance(int ioSocket) {
             continue;
             
         } else if (clientCmd.commandParse() == CMD_CAS) {
+            memset(commandBuff, 0, MAX_BYTES_LIMIT);
+            receiveFromClient(ioSocket, commandBuff);
+            string val = string(commandBuff);
+            
+            struct memCachedVal mcCacheVal;
+            
+            mcCacheVal.mcBytes = clientCmd.getBytesFromCasCmd();
+            mcCacheVal.mcCacheStrVal = val.substr(0, mcCacheVal.mcBytes);
+            mcCacheVal.mcFlags = clientCmd.getFlagsFromCasCmd();
+            mcCacheVal.mcExpTime = 0;
+            mcCacheVal.mcCasVal = hash<string>{}(mcCacheVal.mcCacheStrVal);
+            //mcCacheVal.mcCasVal = clientCmd.getCasUniqueFromCasCmd();
+            string casCmdKey = clientCmd.getKeyFromCasCmd();
+            string output;
+            
+            { // scope of the mutex
+                unique_lock<mutex> guard(mMemcachedMapMut);
+                if (mMemcachedHashMap.find(casCmdKey) == mMemcachedHashMap.end()) {
+                    output =  "NOT_FOUND\r\n>";
+                } else {
+                    /* 
+                     * only if the cas_unique val given in the cas command
+                     * is same as the one already stored in the hash, we
+                     * change the value to the new value
+                     */
+                    
+                    if (clientCmd.getCasUniqueFromCasCmd() ==
+                        mMemcachedHashMap[casCmdKey].mcCasVal) {
+                        mMemcachedHashMap[casCmdKey] = mcCacheVal;
+                        output = "STORED\r\n>";
+                    } else {
+                        output = "EXISTS\r\n>";
+                    }
+                }
+            }
+            
+            sendToClient(ioSocket, output);
+            continue;
+            
             
         } // if user types quit
         else if (clientCmd.commandParse() == CMD_QUIT) {
