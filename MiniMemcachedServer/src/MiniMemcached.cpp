@@ -220,6 +220,33 @@ MiniMemcached::serverInstance(int ioSocket) {
             
             continue;
             
+        } else if (clientCmd.commandParse() == CMD_GETS) {
+            
+            vector<string> keyVec = clientCmd.getKeysFromGetsCmd();
+            
+            for (auto key : keyVec) {
+                string output;
+                struct memCachedVal hashVal = mMemcachedHashMap[key];
+                output.append("VALUE ");
+                output.append(key);
+                output.append(" ");
+                output.append(to_string(hashVal.mcFlags));
+                output.append(" ");
+                output.append(to_string(hashVal.mcBytes));
+                output.append(" ");
+                output.append(to_string(hashVal.mcCasVal));
+                output.append("\n");
+                output.append(hashVal.mcCacheStrVal);
+                output.append("\n");
+                
+                sendToClient(ioSocket, output);
+                output.clear();
+            }
+            sendToClient(ioSocket, "END\n>");
+            continue;
+            
+        } else if (clientCmd.commandParse() == CMD_CAS) {
+            
         } // if user types quit
         else if (clientCmd.commandParse() == CMD_QUIT) {
             cout<<"quit is typed:"<<endl;

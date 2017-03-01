@@ -22,6 +22,8 @@ enum CommandType{
     CMD_SET,
     CMD_DELETE,
     CMD_QUIT,
+    CMD_GETS,
+    CMD_CAS,
     CMD_INVALID,
 } ;
 
@@ -64,6 +66,12 @@ public:
     bool validDeleteCommand(vector<string>);
     inline const string& getKeyFromDeleteCmd() { return mKey; }
     inline const bool& getNoReplyFromDeleteCmd() { return mNoReply; }
+    
+    //gets command related functions
+    bool validGetsCommand(vector<string>);
+    vector<string> mGetsKeyVec;
+    inline const vector<string>& getKeysFromGetsCmd() { return mGetsKeyVec; }
+
     
     
 };

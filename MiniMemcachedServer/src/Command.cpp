@@ -62,6 +62,11 @@ Command::commandParse() {
             return CMD_DELETE;
         else
             return CMD_INVALID;
+    } else if (commandTitle == "gets") {
+        if (validGetsCommand(commandVec))
+            return CMD_GETS;
+        else
+            return CMD_INVALID;
     } else if (commandTitle == "quit") {
         
         return CMD_QUIT;
@@ -109,5 +114,14 @@ Command::validDeleteCommand(vector<string> commandVec) {
     if (commandVec.size() == 3)
         mNoReply = true;
     
+    return true;
+}
+
+bool
+Command::validGetsCommand(vector<string> commandVec) {
+    if (commandVec.size() < 2)
+        return false;
+    mCommand = commandVec[0];
+    mGetsKeyVec = vector<string>(commandVec.begin()+1, commandVec.end());
     return true;
 }
