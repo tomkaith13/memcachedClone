@@ -261,7 +261,7 @@ void MiniMemcached::receiveFromClient(int sockfd, char* message) {
         throw "server instance failed to receive message from client";
     }
 }
-
+/*
 void* MiniMemcached::get_in_addr(struct sockaddr *sa)
 {
     if (sa->sa_family == AF_INET) {
@@ -270,6 +270,8 @@ void* MiniMemcached::get_in_addr(struct sockaddr *sa)
     
     return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
+ */
+
 bool MiniMemcached::initServer() {
     try {
         connectionSetup();
