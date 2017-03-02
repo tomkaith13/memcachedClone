@@ -178,11 +178,22 @@ MiniMemcached::serverInstance(int ioSocket) {
         else if (clientCmd.commandParse() == CMD_GET) {
             vector<string> keyVec = clientCmd.getKeysFromGetCmd();
             
+            
             for (auto key : keyVec) {
+                struct memCachedVal hashVal;
+                bool keyFound = false;
                 
-                if (mMemcachedHashMap.find(key) != mMemcachedHashMap.end()) {
-                    string output;
-                    struct memCachedVal hashVal = mMemcachedHashMap[key];
+                {
+                    unique_lock<mutex> guard(mMemcachedMapMut);
+                    if (mMemcachedHashMap.find(key) !=
+                        mMemcachedHashMap.end()) {
+                            hashVal = mMemcachedHashMap[key];
+                            keyFound = true;
+                    }
+                }
+                string output;
+                
+                if (keyFound) {
                     output.append("VALUE ");
                     output.append(key);
                     output.append(" ");
@@ -196,7 +207,8 @@ MiniMemcached::serverInstance(int ioSocket) {
                     sendToClient(ioSocket, output);
                     output.clear();
                 }
-            }
+                
+            } //end for
             sendToClient(ioSocket, "END\n>");
             continue;
         } // If the user tries to delete a key
@@ -226,22 +238,36 @@ MiniMemcached::serverInstance(int ioSocket) {
             vector<string> keyVec = clientCmd.getKeysFromGetsCmd();
             
             for (auto key : keyVec) {
-                string output;
-                struct memCachedVal hashVal = mMemcachedHashMap[key];
-                output.append("VALUE ");
-                output.append(key);
-                output.append(" ");
-                output.append(to_string(hashVal.mcFlags));
-                output.append(" ");
-                output.append(to_string(hashVal.mcBytes));
-                output.append(" ");
-                output.append(to_string(hashVal.mcCasVal));
-                output.append("\n");
-                output.append(hashVal.mcCacheStrVal);
-                output.append("\n");
+                struct memCachedVal hashVal;
+                bool keyFound = false;
                 
-                sendToClient(ioSocket, output);
-                output.clear();
+                {
+                    unique_lock<mutex> guard(mMemcachedMapMut);
+                    if (mMemcachedHashMap.find(key) != mMemcachedHashMap.end()) {
+                        hashVal = mMemcachedHashMap[key];
+                        keyFound = true;
+                    }
+                    
+                    
+                }
+                if (keyFound) {
+                    string output;
+                    output.append("VALUE ");
+                    output.append(key);
+                    output.append(" ");
+                    output.append(to_string(hashVal.mcFlags));
+                    output.append(" ");
+                    output.append(to_string(hashVal.mcBytes));
+                    output.append(" ");
+                    output.append(to_string(hashVal.mcCasVal));
+                    output.append("\n");
+                    output.append(hashVal.mcCacheStrVal);
+                    output.append("\n");
+                    
+                    sendToClient(ioSocket, output);
+                    output.clear();
+                }
+                
             }
             sendToClient(ioSocket, "END\n>");
             continue;
@@ -266,6 +292,7 @@ MiniMemcached::serverInstance(int ioSocket) {
                 unique_lock<mutex> guard(mMemcachedMapMut);
                 if (mMemcachedHashMap.find(casCmdKey) == mMemcachedHashMap.end()) {
                     output =  "NOT_FOUND\r\n>";
+                    continue;
                 } else {
                     /* 
                      * only if the cas_unique val given in the cas command
@@ -328,16 +355,6 @@ void MiniMemcached::receiveFromClient(int sockfd, char* message) {
         throw "server instance failed to receive message from client";
     }
 }
-/*
-void* MiniMemcached::get_in_addr(struct sockaddr *sa)
-{
-    if (sa->sa_family == AF_INET) {
-        return &(((struct sockaddr_in*)sa)->sin_addr);
-    }
-    
-    return &(((struct sockaddr_in6*)sa)->sin6_addr);
-}
- */
 
 bool MiniMemcached::initServer() {
     try {

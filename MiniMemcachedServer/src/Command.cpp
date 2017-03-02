@@ -67,6 +67,11 @@ Command::commandParse() {
             return CMD_GETS;
         else
             return CMD_INVALID;
+    } else if (commandTitle == "cas") {
+        if (validCasCommand(commandVec))
+            return CMD_CAS;
+        else
+            return CMD_INVALID;
     } else if (commandTitle == "quit") {
         
         return CMD_QUIT;
@@ -136,7 +141,7 @@ Command::validCasCommand(vector<string> commandVec) {
     mFlags = stoi(commandVec[2]);
     mExpTime = 0;
     mBytes = stoi(commandVec[4]);
-    mCasUnique = stol(commandVec[5]);
+    mCasUnique = stoul(commandVec[5]);
     mNoReply = false;
     
     if (commandVec.size() == 7)
