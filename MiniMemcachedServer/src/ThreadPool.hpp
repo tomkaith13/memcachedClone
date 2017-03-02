@@ -45,7 +45,7 @@ class ThreadPool {
     
 public:
     ThreadPool(int tCount);
-    bool AddJob(Job*);
+    bool addJob(Job*);
     void* getResult(int jId);
     void threadFunc();
     void restartReceivingJobs();

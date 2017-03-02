@@ -51,7 +51,7 @@ ThreadPool::~ThreadPool() {
 }
 
 bool
-ThreadPool::AddJob(Job* j) {
+ThreadPool::addJob(Job* j) {
     { //scope for locking the queue mutex before pushing in a job
         unique_lock<mutex> guard(mt);
         if (stopAccepting)

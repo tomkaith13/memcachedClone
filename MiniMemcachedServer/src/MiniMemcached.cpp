@@ -116,7 +116,7 @@ void MiniMemcached::connectionSetup() {
         }
         
         mActiveConnCondV.notify_one();
-        mConnectionTPool->AddJob(new Connection(clientIOSocketFd, this));
+        mConnectionTPool->addJob(new Connection(clientIOSocketFd, this));
     }
 }
 
@@ -285,6 +285,7 @@ MiniMemcached::serverInstance(int ioSocket) {
             mcCacheVal.mcExpTime = 0;
             mcCacheVal.mcCasVal = hash<string>{}(mcCacheVal.mcCacheStrVal);
             //mcCacheVal.mcCasVal = clientCmd.getCasUniqueFromCasCmd();
+            
             string casCmdKey = clientCmd.getKeyFromCasCmd();
             string output;
             
