@@ -32,7 +32,7 @@ using namespace std;
 
 // LIMITS MACRO
 #define MAX_BYTES_LIMIT 100
-#define MAX_CONNECTIONS_LIMIT 10
+#define MAX_CONNECTIONS_LIMIT 20
 #define MAX_CACHE_SIZE 100
 #define DEFAULT_PORT "11211"
 
