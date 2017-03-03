@@ -120,7 +120,7 @@ not handled currently. This could be an improvement for later.
 
 The cache limit is can be set initially by constructor of the class. The
 default value is MAX_CACHE_SIZE. An improvment here would be to add some
-sort of cache cleansing algorithm using Least Recently Used (LRU) or Lease
+sort of cache cleansing algorithm using either Least Recently Used (LRU) or Least
 Frequently Used (LFU) algorithm. This could be a good improvement.
 
 Another improvement that is currently not handled by this version is client
@@ -139,6 +139,7 @@ TESTING:
 Test Automation of the current project can only be done via expect
 scripts.
 
+HOW TO USED THE CLASS:
 The usage of this server can be seen in the main.cpp found in /src
 
 
