@@ -127,7 +127,16 @@ Another improvement that is currently not handled by this version is client
 side API which enable sending and receiving key-val pairs to the server
 programmatically rather than using telnet.
 
-Test Automation of the current project can only be done manually or via expect
+The use of mutexes while reading and writing will create a choke point for
+mutiple readers trying to read the same data. The easy solution to solve
+this issue is to use shared_mutex which is C++'s built for read-write locks
+which solves reader starvation. However, C++11 does not have built-in support
+for shared_mutex yet. It is only available in C++17 which is not available
+on Xcode.
+
+
+TESTING:
+Test Automation of the current project can only be done via expect
 scripts.
 
 The usage of this server can be seen in the main.cpp found in /src

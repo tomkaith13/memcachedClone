@@ -181,12 +181,18 @@ MiniMemcached::serverInstance(int ioSocket) {
              */
             
             mcCacheVal.mcCasVal = hash<string>{}(mcCacheVal.mcCacheStrVal);
+            string output;
             
             { // scope for the mutex to modify the unordered_map
                 unique_lock<mutex> guard(mMemcachedMapMut);
-                mMemcachedHashMap[clientCmd.getKeyFromSetCmd()] = mcCacheVal;
+                if (mMemcachedHashMap.size() <= MAX_CACHE_SIZE) {
+                    mMemcachedHashMap[clientCmd.getKeyFromSetCmd()] = mcCacheVal;
+                    output = "STORED\r\n>";
+                } else {
+                    output = "SERVER ERROR Cache full\r\n>";
+                }
             }
-            sendToClient(ioSocket, "STORED\n>");
+            sendToClient(ioSocket, output);
             
             continue;
         } //logic for get command
