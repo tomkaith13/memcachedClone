@@ -135,11 +135,22 @@ for shared_mutex yet. It is only available in C++17 which is not available
 on Xcode.
 
 
+HOW TO BUILD:
+The project comes with a xcode project which should work on any mac.
+If the user prefers building via commandline. Just unzip the target
+and issue the command:
+bash# g++ -std=c++11 main.cpp ./src/*cpp -I ./src -o memcached
+
+followed by:
+bash# ./memcached
+
+Once the server is running, user can connect to the server via
+bash# telenet <localhost/ip address> 11211
+
+The usage of this server can be seen in the main.cpp found in /src
+
 TESTING:
 Test Automation of the current project can only be done via expect
 scripts.
-
-HOW TO USED THE CLASS:
-The usage of this server can be seen in the main.cpp found in /src
 
 
