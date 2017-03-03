@@ -34,7 +34,7 @@ using namespace std;
 #define MAX_BYTES_LIMIT 100
 #define MAX_CONNECTIONS_LIMIT 20
 #define CONNECTION_TIMEOUT 90
-#define MAX_CACHE_SIZE 100
+#define MAX_CACHE_SIZE 1000
 #define DEFAULT_PORT "11211"
 
 /*
