@@ -19,7 +19,7 @@ The operations implemented are :
 The details and the syntax of the memcached text protocol can be found here:
 https://raw.githubusercontent.com/memcached/memcached/master/doc/protocol.txt
 
-
+===============================================================================
 DESIGN CHOICES:
 This server was designed and implemented using C++11.
 The language choice was purely because of interest to implement many
@@ -135,6 +135,7 @@ for shared_mutex yet. It is only available in C++17 which is not available
 on Xcode.
 
 
+===============================================================================
 HOW TO BUILD:
 The project comes with a xcode project which should work on any mac.
 If the user prefers building via commandline. Just unzip the target
@@ -147,11 +148,8 @@ bash# ./memcached
 Please ensure the build tool chain is currently installed in your server.
 If you are running it on the mac install Xcode.
 
-Once the server is running, user can connect to the server via
-bash# telenet <localhost/ip address> 11211
 
-The usage of this server can be seen in the main.cpp found in /src
-
+===============================================================================
 TESTING:
 Inorder to run this server, we would need to use a test program in C++11.
 The easiest way to go about it is to use the MiniMemcached's constructor.
@@ -173,6 +171,11 @@ that could be phase two of the project.
 serverObj.shutdown is meant for graceful shutdown where it stops the threadpool.
 And frees the internally allocated memory. However, its currently expects to
 be terminated by a SIGINT or Ctrl+C.
+
+Once the server is running, user can connect to the server via
+bash# telenet <localhost/ip address> 11211
+
+The usage of this server can be seen in the main.cpp found in /src
 
 Test Automation of the current project can only be done via expect
 scripts.
