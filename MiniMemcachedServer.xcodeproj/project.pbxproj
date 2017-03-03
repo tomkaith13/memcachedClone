@@ -27,6 +27,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		034889F41E68F1B7000EC68C /* ReadMe */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReadMe; sourceTree = "<group>"; };
 		03774BB61E6264020037350B /* MiniMemcachedServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MiniMemcachedServer; sourceTree = BUILT_PRODUCTS_DIR; };
 		03774BB91E6264020037350B /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		03774BC01E62651F0037350B /* MiniMemcached.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MiniMemcached.cpp; path = src/MiniMemcached.cpp; sourceTree = "<group>"; };
@@ -54,6 +55,7 @@
 		03774BAD1E6264020037350B = {
 			isa = PBXGroup;
 			children = (
+				034889F41E68F1B7000EC68C /* ReadMe */,
 				03774BB81E6264020037350B /* MiniMemcachedServer */,
 				03774BB71E6264020037350B /* Products */,
 			);
@@ -274,6 +276,7 @@
 				03774BBF1E6264020037350B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

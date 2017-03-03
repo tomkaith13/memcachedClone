@@ -1,0 +1,133 @@
+
+README for MiniMemcachedServer:
+
+API Details:
+
+This memcached clone attempts to create a small subset
+of the original memcached server based on the memcached text
+protocol.
+The operations implemented are :
+
+1) SET - setting a key,value
+2) GET - getting a value held by Key.
+3) DELETE - Delete a key-val pair based on given key.
+4) GETS - obtain the key-value pair along with a 64-bit cas_unique id
+5) CAS - Pass the key-value and cas_unique id and the new value is set
+         based on the fact that cas_unique is changed or not.
+6) QUIT - exit the connection
+
+The details and the syntax of the memcached text protocol can be found here:
+https://raw.githubusercontent.com/memcached/memcached/master/doc/protocol.txt
+
+
+DESIGN CHOICES:
+This server was designed and implemented using C++11.
+The language choice was purely because of interest to implement many
+of the concurrency features myself. This could easily be implemented in
+other languages. It uses C++11 built-in thread support which makes it portable
+to most Unix platforms. Also, since memcached was written in C, I would assume
+that using a low-level language is good for performance. The choice was C++11
+ primarily to utilize several built-in functionality of STLs and concurrency
+language constructs.
+
+The networking functionality is implemented using Unix Socket Programming APIs.
+Again, portability was the main reason for this choice. Currently, all socket
+programming APIs are made using embedded into the main MiniMemcached class.
+Probably we should isolate socket calls which into a separate class if Windows
+support needs to be added.
+
+Configuration Limits:
+The server configuration parameter are set when the server is instantiated.
+The default value of the CONFIG parameters can be found at the start of
+MiniMemcachedServer.hpp as macros.
+The server admin can also provide custom config
+parameters via the MiniMemcached constructor.
+An improvement here would be the ability to read config parameters via
+some config file rather than relying on user input.
+
+Here are the config parameters (with their default values):
+MAX_BYTES_LIMIT 100
+MAX_CONNECTIONS_LIMIT 20
+CONNECTION_TIMEOUT 90 (in seconds althought microseconds option can be available)
+MAX_CACHE_SIZE 100 (total cache size)
+DEFAULT_PORT "11211"
+
+MiniMemcached was implemented as a class which using threads.
+The server's main thread is the one which accepts any connection
+from the client. There can be a total of MAX_CONNECTIONS_LIMITS number of
+clients connected simultaneously to the server. Normally, the if this
+number is exceeded, the user will be prompted for a message stating to try
+again later. However, in this server's design, we added a conditional variable
+which causes the server to wait until the total number of accepted clients
+are below the MAX_CONNECTION_LIMIT. This way, the user does not have to poll,
+but can wait until one of the user connection is terminated via a QUIT command
+or a timeout.
+
+The MAX_CONNECTIONS_LIMIT is serviced by the MiniMemcached server via a
+ThreadPool which creates MAX_CONNECTIONS_LIMIT number of threads.
+
+The advantages of using a ThreadPool are:
+1) Number of threads are created initially by the server and stay alive
+   for future use.
+2) The onus of an internal system call of a lwp+kernel thread creation
+   is taken on even before the traffic to the server is begun. This way there is
+   limited user to kernel mode switch.
+3) Threads created by the Pool execute a member function of MiniMemcached.
+
+Disadvantages:
+1) ThreadPool == shared mutable state. This means we need mutexes to control the
+   access to critical sections of the class. These critical sections should be
+   very small to avoid blocking.
+2) The current threadpool is completely static and implemented by us. It does
+   not currently have the feature to grow the number of threads in the pool
+   if the need arises. This could be a add-on feature.
+3) The number of threads that can be spawned in the single machine is limited.
+   The limit can be viewed via `ulimit -a` command.
+
+Alternative to ThreadPool:
+As discussed, the cons of using ThreadPool,
+is we can only achieve vertical scaling depending on the resource of
+our server. One can uses the Actor model which involves creating processes
+and message passing. This will help us add more horizontal scaling.
+
+The reason for choicing threadpool for now, is time-constraint and ability
+to code up something using simple C++ constructs rather than using third party
+libraries.
+
+Coming back to the rest of the funcionality, once the server receives the new
+socket fd per client, we delegate the processing of each client to a single
+thread in the pool. Each server waits for commands to be sent by the client
+and wait for new data to be entered until CONNECTION_TIMEOUT seconds.
+The connection timeout functionality is implemented using select(2). Alternative
+choices to using select(2) a slow syscall are using libraries like libevent or
+some other asynchronous IO provided by the kernel. Select(2) was ultimately
+chosen purely for portability. The best way to pick performance vs portability
+is when the admin knows the OS/machine where the server will be run. Portability
+is important if the server is running on a cloud which can migrate the compute
+instance between OSes.
+
+The clients currently can connect to the server via a simple telnet command.
+Example:
+telnet <ip-address> <port-number>
+
+Once the connection is successful, the user receives a '>' prompt
+to entering more commands.
+
+In the current implementation, command input validation is strict.
+Any deviation from the syntax mentioned in the protocol RFC will not
+be handled and will generate an ERROR message. Extra whitespaces are
+not handled currently. This could be an improvement for later.
+
+The cache limit is can be set initially by constructor of the class. The
+default value is MAX_CACHE_SIZE. An improvment here would be to add some
+sort of cache cleansing algorithm using Least Recently Used (LRU) or Lease
+Frequently Used (LFU) algorithm. This could be a good improvement.
+
+Another improvement that is currently not handled by this version is client
+side API which enable sending and receiving key-val pairs to the server
+programmatically rather than using telnet.
+
+Test Automation of the current project can only be done manually or via expect
+scripts.
+
+
