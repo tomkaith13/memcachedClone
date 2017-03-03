@@ -25,8 +25,13 @@ void ThreadPool::threadFunc() {
             currJob = jobQueue.front();
             jobQueue.pop_front();
         }
-        
-        currJob->start();
+        try {
+            currJob->start();
+        } catch (const char* e) {
+            cout<<"Exception in Worker Thread: "<<e<<endl;
+        } catch(...) {
+            cout<<"Exception has been caught in the worker thread";
+        }
         delete currJob;
     } //end while
 }
