@@ -130,4 +130,6 @@ programmatically rather than using telnet.
 Test Automation of the current project can only be done manually or via expect
 scripts.
 
+The usage of this server can be seen in the main.cpp found in /src
+
 
