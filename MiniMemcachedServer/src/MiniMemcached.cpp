@@ -138,10 +138,16 @@ MiniMemcached::serverInstance(int ioSocket) {
     
     sendToClient(ioSocket, IntroStr);
     char commandBuff[MAX_BYTES_LIMIT];
+    
     while(1) {
         memset(commandBuff, 0, MAX_BYTES_LIMIT);
         
-        receiveFromClient(ioSocket, commandBuff);
+        if (receiveFromClient(ioSocket, commandBuff) == false) {
+            cerr<<"Connection to client closed due to timeout"<<endl;
+            sendToClient(ioSocket, "SERVER ERROR Connection closed by Server "
+                                   "due to timeout!!\r\n\n");
+            break;
+        }
         Command clientCmd(commandBuff);
         
         //logic for set command
@@ -151,6 +157,15 @@ MiniMemcached::serverInstance(int ioSocket) {
             memset(commandBuff, 0, MAX_BYTES_LIMIT);
             receiveFromClient(ioSocket, commandBuff);
             string val = string(commandBuff);
+            
+            if (val.empty()) {
+                string errMsg = "SERVER ERROR Val obtained is empty"
+                                "due to choice or timeout"
+                                "\r\n Value not stored. Try again!!"
+                                "\r\n>";
+                sendToClient(ioSocket, errMsg);
+                continue;
+            }
             
             struct memCachedVal mcCacheVal;
             
@@ -276,6 +291,15 @@ MiniMemcached::serverInstance(int ioSocket) {
             memset(commandBuff, 0, MAX_BYTES_LIMIT);
             receiveFromClient(ioSocket, commandBuff);
             string val = string(commandBuff);
+                
+            if (val.empty()) {
+                string errMsg = "SERVER ERROR Val obtained is empty"
+                                "due to choice or timeout"
+                                "\r\n Value not stored. Try again!!"
+                                "\r\n>";
+                sendToClient(ioSocket, errMsg);
+                continue;
+            }
             
             struct memCachedVal mcCacheVal;
             
@@ -349,12 +373,33 @@ void MiniMemcached::sendToClient(int sockfd, string message) {
 
 }
 
-void MiniMemcached::receiveFromClient(int sockfd, char* message) {
+bool MiniMemcached::receiveFromClient(int sockfd, char* message) {
+    
+    fd_set clientReadSet;
+    struct timeval clientReadSetTV;
+    int selRetVal;
+    clientReadSetTV.tv_sec = CONNECTION_TIMEOUT;
+    clientReadSetTV.tv_usec = 0;
+    
+    FD_ZERO(&clientReadSet);
+    FD_SET(sockfd, &clientReadSet);
+    
+    if ((selRetVal = select(sockfd+1, &clientReadSet,
+                            nullptr, nullptr,
+                            &clientReadSetTV)) == -1) {
+        perror("select failed");
+        throw "select failed inside worker thread!";
+    }
+    
+    if (FD_ISSET(sockfd, &clientReadSet) == false)
+        return false;
     
     if (recv(sockfd, message, MAX_BYTES_LIMIT, 0) == -1) {
         perror("receive from client failed");
         throw "server instance failed to receive message from client";
     }
+    
+    return true;
 }
 
 bool MiniMemcached::initServer() {
