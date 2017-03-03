@@ -153,6 +153,27 @@ bash# telenet <localhost/ip address> 11211
 The usage of this server can be seen in the main.cpp found in /src
 
 TESTING:
+Inorder to run this server, we would need to use a test program in C++11.
+The easiest way to go about it is to use the MiniMemcached's constructor.
+
+MiniMemcached(string portNum = DEFAULT_PORT,
+    int connectionCount = MAX_CONNECTIONS_LIMIT,
+    int cacheSize = MAX_CACHE_SIZE,
+    int connectTimeout = CONNECTION_TIMEOUT,
+    string configFile = "");
+
+As mentioned above, defaults can be found as macros in MiniMemcached.hpp
+
+Once we create the server object, all we need to do is to run
+serverObj.initServer();
+
+This will cause it to run. Ideally, this would run as a deamon. However
+that could be phase two of the project.
+
+serverObj.shutdown is meant for graceful shutdown where it stops the threadpool.
+And frees the internally allocated memory. However, its currently expects to
+be terminated by a SIGINT or Ctrl+C.
+
 Test Automation of the current project can only be done via expect
 scripts.
 
