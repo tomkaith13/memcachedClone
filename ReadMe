@@ -179,5 +179,27 @@ The usage of this server can be seen in the main.cpp found in /src
 
 Test Automation of the current project can only be done via expect
 scripts.
+======================== Actual Requirements ===================================
+
+
+This exercise is meant to demonstrate:
+An understanding of servers, networking, and protocols.
+An understanding of concurrency, performance, and resource constraints, and an ability to anticipate future issues and implement solutions.
+An ability to write clear, easy to understand code, communicate your approach, and reason about tradeoffs that you have made.
+The exercise:
+Write a memcache server that has support for the Get, Set, and Delete methods using either the Memcache Text Protocol or the Memcache Binary Protocol. Include support for Compare And Swap, either by implementing the GETS and CAS methods in the text protocol or by using the CAS field in the binary protocol. You don't need to implement support for the expiry fields.
+Support a configurable limit for the resource consumption of your service.
+Handle concurrency issues that arise in an environment with multiple simultaneous writers and readers.
+Discussion:
+Tell us what you expect the performance of your implementation to be, and where you anticipate bottlenecks.
+Suggest ways in which the performance, reliability, or other limitations of your implementation could be improved upon in the future.
+Suggest or implement ways in which your service could be monitored and managed in a production setting.
+Show how you tested your server.
+Provide instructions on what we need to do to build and run your server locally on a standard unix-like development environment (e.g. Mac laptop or Linux server).
+Notes:
+You should choose an appropriate language and runtime given the requirements of the exercise. Feel free to run your choice by us if you have questions.
+You may use basic collections and support classes from the language of your choice, but you are responsible for implementing the resource constraints, eviction algorithm, and concurrency control.
+We don't expect you to reimplement all of memcache in a few hours. (Please don't try to!) It's more important that your solution work and be complete, and that you can reason about the performance tradeoffs and potential concurrency issues that you'd expect given real-world usage.
+Please provide all source code via a Git repository – create a local repo for your code, and when the exercise is complete, please tar or zip your main directory and send it along to us (and please remember to include your .git directory/files). If you’re not comfortable with Git, you may simply provide a tgz of the source code.
 
 
